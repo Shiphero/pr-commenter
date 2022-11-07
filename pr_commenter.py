@@ -8,7 +8,7 @@ from github import Github, GithubException
 usage = """
 Usage:
   pr_commenter (-h | --help)
-  pr_commenter <repo> <pr> <file>... [--title=<title>] [--wrap=<language>] [--token=<token>] [--tag=<tag>...]
+  pr_commenter <repo> <pr> <file>... [--title=<title>] [--wrap=<language>] [--token=<token>] [--label=<label>...]
 
 Options:
   -h --help                         Show this screen.  
@@ -48,11 +48,11 @@ def main(argv=None) -> None:
             existent_comment = c_issue
             break
     if existent_comment:
-        issue_comment = existent_comment.edit(comment)
-        print(f"Comment updated: {issue_comment.url}")
+        existent_comment.edit(comment)
+        print(f"Comment updated: {existent_comment.html_url}")
     else:
         issue_comment = pr.create_issue_comment(comment)
-        print(f"Comment created: {issue_comment.url}")
+        print(f"Comment created: {issue_comment.html_url}")
 
     if args["--label"]:        
         print(f"Labels added: {', '.join(args['--label'])}")
