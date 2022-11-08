@@ -23,7 +23,7 @@ __version__ = "0.1"
 def main(argv=None) -> None:
     args = docopt(__doc__ + usage, argv, version=__version__)
     comment = ""
-    with fileinput.input(files=args["<file>"], encoding="utf-8") as f:
+    with fileinput.input(files=args["<file>"]) as f:
         for line in f:
             comment += line
     
