@@ -1,4 +1,4 @@
-# prCommenter
+# pr_commenter
 
 Comment or update a comment in a given PR
 
