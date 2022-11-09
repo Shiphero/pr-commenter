@@ -22,6 +22,13 @@ __version__ = "0.1"
 
 def main(argv=None) -> None:
     args = docopt(__doc__ + usage, argv, version=__version__)
+
+    try:
+        gh = Github(args["--token"] or os.environ["PR_COMMENTER_GITHUB_TOKEN"])
+    except KeyError:
+        raise SystemExit("Token not found. Pass --token or set envvar PR_COMMENTER_GITHUB_TOKEN")
+
+
     comment = ""
     with fileinput.input(files=args["<file>"]) as f:
         for line in f:
@@ -38,7 +45,7 @@ def main(argv=None) -> None:
     
     comment = f"{title}\n\n{wrap_start}{comment}{wrap_end}"
 
-    gh = Github(args["--token"] or os.environ.get("PR_COMMENTER_GITHUB_TOKEN"))
+
     pr = gh.get_repo(args["<repo>"]).get_pull(int(args["<pr>"].strip("pr/")))
 
     # update or create a comment
