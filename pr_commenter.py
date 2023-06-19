@@ -32,11 +32,9 @@ logger = logging.getLogger(__file__)
 
 
 def setup_logger(debug=False):
-    # setup logging
-    log_level = logging.DEBUG if debug else logging.INFO
-    logging.basicConfig(
-        level=log_level, format="%(message)s", datefmt="->", handlers=[RichHandler()]
-    )
+    # setup loggin
+    logger.setLevel(logging.DEBUG if debug else logging.INFO)
+    logging.basicConfig(format="%(message)s", datefmt="->", handlers=[RichHandler()])
     
 
 def get_pr_and_user(args):
@@ -112,7 +110,7 @@ def main(argv=None) -> None:
     if not comment:
         comment = render(lines, args["--template"], args["--build"])
 
-        is_empty = re.sub(r"<!-- pr_commenter[^>]*-->", "", comment).strip()
+        is_empty = re.sub(r"<!-- pr_commenter[^>]*-->", "", comment).strip() == ""
         if is_empty:
             logger.info("New comment is empty. Skipping...")
             # remove labels 
