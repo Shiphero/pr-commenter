@@ -71,7 +71,7 @@ def main(argv=None) -> None:
     args = docopt(__doc__ + usage, argv, version=__version__)
     debug = args["--debug"]
 
-    setup_logger()
+    setup_logger(debug)
 
     pr, user = get_pr_and_user(args)
 
@@ -94,7 +94,8 @@ def main(argv=None) -> None:
             prev_template, previous_build = match.groups()
             if prev_template == args["--template"] and previous_build != args["--build"]:
                 logger.info("Found a previous comment for a different build. Deleting...")
-                previous_comment.delete()
+                if not debug:
+                    previous_comment.delete()
                 break
             elif prev_template == args["--template"] and previous_build == args["--build"]:
                 logger.info("Found a previous comment for the same build. Appending...")
