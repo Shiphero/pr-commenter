@@ -3,7 +3,7 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = "pr_commenter"
+name = "pr-commenter"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "BSD 3-Clause License"}
@@ -16,11 +16,12 @@ authors = [
 dependencies = [
     "pygithub >= 1.55",
     "docopt-ng >= 0.8.1",
+    "Jinja2 >= 3",
 ]
 dynamic = ["version", "description"]
 
 [project.scripts]
-pr_commenter = "pr_commenter:main"
+pr-commenter = "pr_commenter:main"
 
 
 [project.optional-dependencies]
