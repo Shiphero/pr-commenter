@@ -1,5 +1,9 @@
-from textwrap import dedent
 from pr_commenter import render
+
+
+def test_render_no_template():
+    result = render(["l1", "l2"])
+    assert result == "l1\nl2"
 
 
 def test_render(template, monkeypatch):
