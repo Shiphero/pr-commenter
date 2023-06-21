@@ -11,7 +11,9 @@ def test_render(template, monkeypatch):
     result = render(["l1", "l2"], template, build="abc1")
     first_line, rest = result.split("\n", 1)
     assert first_line == f"<!-- pr_commenter: {template} abc1 -->"
-    assert rest == """
+    assert (
+        rest
+        == """
     # Example
     the title
 
@@ -21,11 +23,15 @@ def test_render(template, monkeypatch):
     
     ```
     """
+    )
+
 
 def test_render_append(template, monkeypatch):
     monkeypatch.setenv("TITLE", "the title")
     result = render(["l1", "l2"], template, build="abc1", is_append=True)
-    assert result == """
+    assert (
+        result
+        == """
     
     the title
 
@@ -35,3 +41,4 @@ def test_render_append(template, monkeypatch):
     
     ```
     """
+    )

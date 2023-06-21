@@ -1,12 +1,10 @@
 # pr-commenter
 
-A CLI app to manage a comment a Github PR based on content from stdin, files or environment variables. 
+A CLI app to manage a comment a Github PR based on content from stdin, files or environment variables.
 
-You can create a new comment, delete previous one of the same type
-or update the "current" one. 
+You can create a new comment, hide previous one of the same type or update the "current" one.
 
-An special comment with metadata is added to the comment so it could be 
-detected in a subsequent run and update or delete if needed. 
+A hidden metadata is added to the comment so it could be detected in a subsequent run and update or delete if needed.
 
 ## Basic usage
 
@@ -16,7 +14,7 @@ Create a Github token with `repo` scope and export it as `PR_COMMENTER_GITHUB_TO
 pr-commenter your/repo 12 comment.txt
 ```
 
-Or from the standard input
+Or from the standard input, using `-` as the file name
 
 ```
 cat comment.txt | pr-commenter your/repo 12 -
@@ -36,24 +34,24 @@ Suposse you have a template `failed_tests.j2` like this
 {% endfor %}
 ```
 
-And your suite produce a file `failures.txt`  with the list 
-of failed tests like 
+Then your test-runner produces a file `failures.txt`  with the list 
+of failed tests like this:
 
 ```	
 tests/test_client.py::test_client_simple
 tests/test_client.py::test_client_complex
 ```
 
-Suppose you want to add a single comment to the PR with the failed tests for 
-two different suites executions in the same "commit". 
+So we want to add a **single comment** to the PR with the failed tests for 
+two different suites executions triggered by the same "commit". 
 
-In the post-build phase, you can run
+In the post-build phase of both suites, you can run something like 
 
+```bash
+pr-commenter your/repo $PR failures.txt -t failed_tests.j2 --build=$COMMIT
 ```
-$ pr-commenter your/repo $PR failures.txt -t failed_tests.j2 --build=$COMMIT
-```
 
-The first suite that finish will post a like this
+The first suite that finish will post a comment like this
 
 
 ````markdown
@@ -68,8 +66,11 @@ tests/test_client.py::test_client_complex
 ```
 ````
 
-Then the second suite will find the previous comment for this template 
-and commit (`"abc123"`, so the result will be an update like 
+Then the second suite will find that previous comment that was for the same 
+template and same and commit (`"abc123"` in the example), so pr-commenter will
+edit the comment and append the new content. 
+
+The result will be something like this:
 
 ````markdown
 <!-- pr_commenter: failed_tests.j2 abc123 -->
@@ -90,16 +91,16 @@ tests/test_server.py::test_server_1
 
 ````
 
-In a next commit, the first suite will post a new comment, but this time 
-the commit will be different, so a new comment will be created and the previous
-deleted. 
+In a next commit, the first suite that finishes will post a new comment, but this time 
+the commit will be different, so the previous "abc123" comment will be minimized. 
 
 ## Templates
 
-It's use Jinja2 templates. The stdin/files is passed and a variable `input_lines`
-A `is_append` will be `True` in case the new comment will be appended to an existent
-one (so you can ommit some header). In addition, the complete `os.environ`
-dictionary is passed, so all the environment variables are available in the template. 
+It uses Jinja2 templates. The stdin/files is passed and a variable `input_lines`
+And `is_append` will be `True` in case the new comment will be appended to an existent
+one (so you can ommit the header or footer, for instance). 
+
+In addition, the complete `os.environ` dictionary is passed, so all the environment variables are available in the template.
 
 
 ## Install
