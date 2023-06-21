@@ -1,16 +1,16 @@
 # pr-commenter
 
+Create and manage automatic comments in a Github PR
+
 [![tests](https://github.com/Shiphero/pr-commenter/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/Shiphero/pr-commenter/actions/workflows/pytest.yml)
 [![black](https://github.com/Shiphero/pr-commenter/actions/workflows/black.yml/badge.svg?branch=main)](https://github.com/Shiphero/pr-commenter/actions/workflows/black.yml)
 [![PyPI version](https://img.shields.io/pypi/v/pr-commenter)](https://pypi.org/project/pr-commenter/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/pr-commenter)](https://libraries.io/pypi/pr-commenter)
 
 
-A CLI app to manage a comment a Github PR based on content from stdin, files or environment variables.
+`pr-commenter` is CLI app to add a comment a Github PR based on content from stdin, files or environment variables.
 
-You can create a new comment, hide previous one of the same type or update the "current" one.
-
-A hidden metadata is added to the comment so it could be detected in a subsequent run and update or delete if needed.
+You can create a new comment, hide a previous one of the same type or update the "current" one from a different process. This is done with a hidden metadata added to the comment so it could be detected in a subsequent run, and update or hide previous messages if needed.
 
 ## Basic usage
 
@@ -25,6 +25,10 @@ Or from the standard input, using `-` as the file name
 ```
 cat comment.txt | pr-commenter your/repo 12 -
 ```
+
+This will simply create a new comment in the PR 12 with the content of `comment.txt`
+But there is much more. 
+
 
 ## Advanced example
 

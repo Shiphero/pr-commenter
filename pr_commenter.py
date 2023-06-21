@@ -1,4 +1,4 @@
-"""Create or upgrade a comment in a given PR"""
+"""Create and manage automatic comments in a Github PR"""
 import fileinput
 import logging
 import re
