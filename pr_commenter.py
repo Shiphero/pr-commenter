@@ -13,8 +13,8 @@ from rich.logging import RichHandler
 
 usage = """
 Usage:
-  pr_commenter (-h | --help)
-  pr_commenter <repo> <pr> [<file>...] [--template=<template>] [--build=<build>] [--append] [--token=<token>] [--label=<label>...] [--debug]
+  pr-commenter (-h | --help)
+  pr-commenter <repo> <pr> [<file>...] [--template=<template>] [--build=<build>] [--append] [--token=<token>] [--label=<label>...] [--debug]
 
 Options:
   -h --help                     Show this screen.  
