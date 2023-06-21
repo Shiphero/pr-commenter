@@ -37,7 +37,8 @@ Changelog = "https://github.com/Shiphero/pr-commenter/blob/main/CHANGELOG.md"
 [project.optional-dependencies]
 dev = [
     "pytest",
-    "black"
+    "black",
+    "rich"
 ]
 
 [tool.ipdb]

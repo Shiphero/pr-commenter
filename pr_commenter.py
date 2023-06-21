@@ -9,7 +9,10 @@ import requests
 from docopt import DocoptExit, docopt
 from github import Github, GithubException
 from jinja2 import Environment
-from rich.logging import RichHandler
+try:
+    from rich.logging import RichHandler
+except ImportError:
+    RichHandler = None
 
 usage = """
 Usage:
@@ -34,7 +37,10 @@ logger = logging.getLogger(__file__)
 def setup_logger(debug=False):
     # setup loggin
     logger.setLevel(logging.DEBUG if debug else logging.INFO)
-    logging.basicConfig(format="%(message)s", datefmt="->", handlers=[RichHandler()])
+    kw = {}
+    if RichHandler: 
+        kw = {"handlers": [RichHandler()]}
+    logging.basicConfig(format="%(message)s", datefmt="->", **kw)
 
 
 def get_pr_and_user(token, repo, pr_number):
