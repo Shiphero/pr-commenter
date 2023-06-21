@@ -1,5 +1,11 @@
 # pr-commenter
 
+[![tests](https://github.com/Shiphero/pr-commenter/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/Shiphero/pr-commenter/actions/workflows/pytest.yml)
+[![black](https://github.com/Shiphero/pr-commenter/actions/workflows/black.yml/badge.svg?branch=main)](https://github.com/Shiphero/pr-commenter/actions/workflows/black.yml)
+[![PyPI version](https://img.shields.io/pypi/v/pr-commenter)](https://pypi.org/project/pr-commenter/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/pr-commenter)](https://libraries.io/pypi/pr-commenter)
+
+
 A CLI app to manage a comment a Github PR based on content from stdin, files or environment variables.
 
 You can create a new comment, hide previous one of the same type or update the "current" one.
@@ -105,11 +111,17 @@ In addition, the complete `os.environ` dictionary is passed, so all the environm
 
 ## Install
 
-- Install the package
+- Install the package with pipx
 
 ```
 pip install --user pipx
-pipx install  git+ssh://git@github.com/Shiphero/pr_commenter.git
+pipx install pr-commenter
+```
+
+Alternatively, with pip
+
+```
+pip install --user pr-commenter
 ```
 
 - Create a Github token with `repo` scope and export it as `PR_COMMENTER_GITHUB_TOKEN` environment variable
