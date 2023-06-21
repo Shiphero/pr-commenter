@@ -9,6 +9,7 @@ import requests
 from docopt import DocoptExit, docopt
 from github import Github, GithubException
 from jinja2 import Environment
+
 try:
     from rich.logging import RichHandler
 except ImportError:
@@ -38,7 +39,7 @@ def setup_logger(debug=False):
     # setup loggin
     logger.setLevel(logging.DEBUG if debug else logging.INFO)
     kw = {}
-    if RichHandler: 
+    if RichHandler:
         kw = {"handlers": [RichHandler()]}
     logging.basicConfig(format="%(message)s", datefmt="->", **kw)
 
