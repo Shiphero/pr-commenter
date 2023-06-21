@@ -54,7 +54,7 @@ def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_an
         autospec=PullRequestComment,
         user=user,
         html_url="url_comment1",
-        body=f"<!-- pr_commenter: {template_simple} abc1 -->\n    Content: original",
+        body=f"<!-- pr-commenter: {template_simple} abc1 -->\n    Content: original",
     )
     pr.get_issue_comments.configure_mock(return_value=[previous_comment])
 
@@ -64,7 +64,7 @@ def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_an
     pr.create_issue_comment.assert_not_called()
 
     expected = (
-        f"<!-- pr_commenter: {template_simple} abc1 -->\n    Content: original\n\n      Content: new content\n    "
+        f"<!-- pr-commenter: {template_simple} abc1 -->\n    Content: original\n\n      Content: new content\n    "
     )
     previous_comment.edit.assert_called_once_with(expected)
 
@@ -84,7 +84,7 @@ def test_with_existent_comment_other_build(monkeypatch, token, template_simple, 
         autospec=PullRequestComment,
         user=user,
         html_url="comment1",
-        body=f"<!-- pr_commenter: {template_simple} abc1 -->\n    Content: original",
+        body=f"<!-- pr-commenter: {template_simple} abc1 -->\n    Content: original",
     )
     pr.get_issue_comments.configure_mock(return_value=[previous_comment])
     new_comment = mocker.MagicMock(name="new_comment", autospec=PullRequestComment, html_url="new_comment_url")
@@ -97,7 +97,7 @@ def test_with_existent_comment_other_build(monkeypatch, token, template_simple, 
 
     previous_comment.edit.assert_not_called()
 
-    expected = f"<!-- pr_commenter: {template_simple} xyz2 -->\n\n      Content: new content\n    "
+    expected = f"<!-- pr-commenter: {template_simple} xyz2 -->\n\n      Content: new content\n    "
 
     pr.create_issue_comment.assert_called_once_with(expected)
 
@@ -106,7 +106,7 @@ def test_with_existent_comment_other_build(monkeypatch, token, template_simple, 
 
 
 def test_empty_new_comment(mocker, pr_and_user, caplog):
-    mocker.patch("pr_commenter.render", return_value="<!-- pr_commenter: foo xyz2 -->\n")
+    mocker.patch("pr_commenter.render", return_value="<!-- pr-commenter: foo xyz2 -->\n")
     pr = pr_and_user[0]
     main(argv=["user/repo", "1"])
     pr.create_issue_comment.assert_not_called()
@@ -114,7 +114,7 @@ def test_empty_new_comment(mocker, pr_and_user, caplog):
 
 
 def test_empty_remove_labels(mocker, pr_and_user, caplog):
-    mocker.patch("pr_commenter.render", return_value="<!-- pr_commenter: foo xyz2 -->\n")
+    mocker.patch("pr_commenter.render", return_value="<!-- pr-commenter: foo xyz2 -->\n")
     pr = pr_and_user[0]
     main(argv=["user/repo", "1", "--label", "foo", "--label", "bar"])
     pr.remove_from_labels.assert_has_calls([mocker.call("foo"), mocker.call("bar")])
@@ -122,7 +122,7 @@ def test_empty_remove_labels(mocker, pr_and_user, caplog):
 
 
 def test_not_empty_add_labels(mocker, pr_and_user, caplog):
-    mocker.patch("pr_commenter.render", return_value="<!-- pr_commenter: foo xyz2 -->\ncomment")
+    mocker.patch("pr_commenter.render", return_value="<!-- pr-commenter: foo xyz2 -->\ncomment")
     pr = pr_and_user[0]
     main(argv=["user/repo", "1", "--label", "foo", "--label", "bar"])
     pr.remove_from_labels.assert_not_called()

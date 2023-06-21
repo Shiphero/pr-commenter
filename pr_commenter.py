@@ -88,7 +88,7 @@ def render(lines, template=None, build="", is_append=False):
         t = env.from_string(Path(template).read_text())
         comment = t.render({"input_lines": lines, "is_append": is_append, **environ})
         if not is_append:
-            comment = f"<!-- pr_commenter: {template} {build or ''} -->\n{comment}"
+            comment = f"<!-- pr-commenter: {template} {build or ''} -->\n{comment}"
     else:
         comment = "\n".join(lines)
     logger.debug("Comment:\n%s", comment)
@@ -129,7 +129,7 @@ def main(argv=None) -> None:
 
         first_line = previous_comment.body.split("\n")[0]
 
-        match = re.search(r"<!-- pr_commenter: (\S+) (\S+)?\s*-->", first_line)
+        match = re.search(r"<!-- pr-commenter: (\S+) (\S+)?\s*-->", first_line)
         if match:
             prev_template, prev_build = match.groups()
             if prev_template == template and prev_build != build:
@@ -152,7 +152,7 @@ def main(argv=None) -> None:
     if not comment:
         comment = render(lines, template, args["--build"])
 
-        is_empty = re.sub(r"<!-- pr_commenter[^>]*-->", "", comment).strip() == ""
+        is_empty = re.sub(r"<!-- pr-commenter[^>]*-->", "", comment).strip() == ""
         if is_empty:
             logger.info("New comment is empty. Skipping...")
             for label in labels:

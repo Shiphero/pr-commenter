@@ -55,7 +55,7 @@ The first suite that finish will post a comment like this
 
 
 ````markdown
-<!-- pr_commenter: failed_tests.j2 abc123 -->
+<!-- pr-commenter: failed_tests.j2 abc123 -->
 ## Failed tests
  
 [suite client](http://the-client-url):
@@ -73,7 +73,7 @@ edit the comment and append the new content.
 The result will be something like this:
 
 ````markdown
-<!-- pr_commenter: failed_tests.j2 abc123 -->
+<!-- pr-commenter: failed_tests.j2 abc123 -->
 ## Failed tests
  
 [suite client](http://the-client-url):
