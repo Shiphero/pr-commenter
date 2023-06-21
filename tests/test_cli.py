@@ -14,7 +14,7 @@ def pr_and_user(mocker):
     return ret
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def token(monkeypatch):
     monkeypatch.setenv("PR_COMMENTER_GITHUB_TOKEN", "token1")
 
