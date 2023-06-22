@@ -147,7 +147,7 @@ def main(argv=None) -> None:
     if files:
         with fileinput.input(files=files) as f:
             for line in f:
-                lines.append(line.strip())
+                lines.append(line.rstrip("\n"))
 
     # update or create a comment
     comment = None
@@ -182,7 +182,6 @@ def main(argv=None) -> None:
     is_empty = False
     if not comment:
         comment = render(lines, template, args["--build"])
-
         is_empty = re.sub(r"<!-- pr-commenter[^>]*-->", "", comment).strip() == ""
         if is_empty:
             logger.info("New comment is empty. Skipping...")
