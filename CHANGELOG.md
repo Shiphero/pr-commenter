@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [v0.2](https://github.com/Shiphero/pr-commenter/tree/v0.2) - 2023-06-21
 
-- refactor based on templates [#1](https://github.com/Shiphero/pr-commenter/pull/1) ([mgaitan](https://github.com/mgaitan))
+- Full refactor based on templates [#1](https://github.com/Shiphero/pr-commenter/pull/1) ([mgaitan](https://github.com/mgaitan))
 
 
 [Full Changelog](https://github.com/Shiphero/pr-commenter/compare/v0.1...v0.2)

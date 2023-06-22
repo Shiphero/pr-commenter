@@ -1,6 +1,6 @@
 import pytest
 
-from pr_commenter import main
+from pr_commenter import main, GraphqlClient
 
 from github import PullRequest, AuthenticatedUser, PullRequestComment
 
@@ -43,7 +43,9 @@ def test_basic_from_multi_file(tmp_path, mocker, pr_and_user, caplog):
 
 
 def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_and_user, caplog):
-    minimize = mocker.patch("pr_commenter.minimize_comment")
+    minimize = mocker.patch.object(GraphqlClient, "minimize_comment")
+    is_minimized = mocker.patch.object(GraphqlClient, "is_minimized", return_value=False)
+    
     pr, user = pr_and_user
 
     monkeypatch.setenv("CONTENT", "new content")
@@ -61,6 +63,7 @@ def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_an
     main(argv=["user/repo", "1", "--build", "abc1", "--template", template_simple])
 
     minimize.assert_not_called()
+    is_minimized.assert_called_once_with(previous_comment)
     pr.create_issue_comment.assert_not_called()
 
     expected = (
@@ -73,7 +76,8 @@ def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_an
 
 
 def test_with_existent_comment_other_build(monkeypatch, token, template_simple, mocker, pr_and_user, caplog):
-    minimize = mocker.patch("pr_commenter.minimize_comment")
+    minimize = mocker.patch.object(GraphqlClient, "minimize_comment")
+    is_minimized = mocker.patch.object(GraphqlClient, "is_minimized", return_value=False)
     pr, user = pr_and_user
 
     monkeypatch.setenv("CONTENT", "new content")
@@ -93,7 +97,8 @@ def test_with_existent_comment_other_build(monkeypatch, token, template_simple, 
     main(argv=["user/repo", "1", "--build", "xyz2", "--template", template_simple])
 
     # original was minimized
-    minimize.assert_called_once_with(previous_comment, token="token1")
+    is_minimized.assert_called_once_with(previous_comment)
+    minimize.assert_called_once_with(previous_comment)
 
     previous_comment.edit.assert_not_called()
 

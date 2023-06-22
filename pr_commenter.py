@@ -57,33 +57,54 @@ def get_pr_and_user(token, repo, pr_number):
         raise ValueError("Repo or PR not found")
 
 
-def minimize_comment(comment, token, reason="OUTDATED"):
-    """
-    Minimize (hide) a comment on GitHub using the api v4
-    (as pygithub only cover the api rest v3 and this feature is not there)
+class GraphqlClient:
+    def __init__(self, token):
+        self.token = token
 
-    This will hide the comment from view, but not delete it.
-    Valid reasons are: ABUSE, OFF_TOPIC, OUTDATED, RESOLVED, SPAM
-    """
-    minimize_comment = """
-        mutation MinimizeComment($commentId: ID!, $minimizeReason: ReportedContentClassifiers!) {
-            minimizeComment(input: {subjectId: $commentId, classifier: $minimizeReason}) {
+    def _post(self, query_or_mutation, variables=None):
+        response = requests.post(
+            "https://api.github.com/graphql",
+            headers={
+                "Authorization": f"token {self.token}",
+                "Content-Type": "application/json",
+            },
+            json={"query": query_or_mutation, "variables": variables},
+        )
+        return response.json()
+
+    def minimize_comment(self, comment, reason="OUTDATED"):
+        """
+        Minimize (hide) a comment on GitHub using the api v4
+        (as pygithub only cover the api rest v3 and this feature is not there)
+
+        This will hide the comment from view, but not delete it.
+        Valid reasons are: ABUSE, OFF_TOPIC, OUTDATED, RESOLVED, SPAM
+        """
+        mutation = """
+            mutation MinimizeComment($commentId: ID!, $minimizeReason: ReportedContentClassifiers!) {
+                minimizeComment(input: {subjectId: $commentId, classifier: $minimizeReason}) {
                 clientMutationId
             }
-    }"""
+        }"""
+        variables = {"commentId": comment.raw_data["node_id"], "minimizeReason": reason}
+        return self._post(mutation, variables)
 
-    response = requests.post(
-        "https://api.github.com/graphql",
-        headers={
-            "Authorization": f"token {token}",
-            "Content-Type": "application/json",
-        },
-        json={
-            "query": minimize_comment,
-            "variables": {"commentId": comment.raw_data["node_id"], "minimizeReason": reason},
-        },
-    )
-    logger.info(response.json())
+    def is_minimized(self, comment) -> bool:
+        """
+        Check if a comment is minimized (hidden) on GitHub using the api v4
+        """
+        query = """
+         query CheckMinimizedComment($commentID: ID!) {
+          node(id: $commentID) {
+            ... on Minimizable {
+              isMinimized
+            }
+          }
+         }
+        """
+        variables = {'commentID': comment.raw_data["node_id"]}
+        result = self._post(query, variables)
+        return result["data"]["node"]['isMinimized']
 
 
 def render(lines, template=None, build="", is_append=False):
@@ -117,6 +138,7 @@ def main(argv=None) -> None:
     except ValueError as e:
         raise DocoptExit(str(e))
 
+    graphql_client = GraphqlClient(token)
     labels = args["--label"]
     template = args["--template"]
     build = args["--build"]
@@ -129,11 +151,13 @@ def main(argv=None) -> None:
 
     # update or create a comment
     comment = None
+
     for previous_comment in pr.get_issue_comments():
-        if previous_comment.user.login != user.login:
-            # only consider comments from the same user
+        if previous_comment.user.login != user.login or graphql_client.is_minimized(previous_comment):
+            # we do not consider already minimized comments
             continue
 
+        # previous comment is a candidate to be minimized or updated
         first_line = previous_comment.body.split("\n")[0]
 
         match = re.search(r"<!-- pr-commenter: (\S+) (\S+)?\s*-->", first_line)
@@ -142,7 +166,7 @@ def main(argv=None) -> None:
             if prev_template == template and prev_build != build:
                 logger.info("Found a previous comment for a different build. Minimizing it...")
                 if not debug:
-                    minimize_comment(previous_comment, token=token)
+                    graphql_client.minimize_comment(previous_comment)
                 break
             elif prev_template == template and prev_build == build:
                 logger.info("Found a previous comment for the same build. Appending...")
