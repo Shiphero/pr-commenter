@@ -37,9 +37,9 @@ def test_basic_from_multi_file(tmp_path, mocker, pr_and_user, caplog):
     content = tmp_path / "content.txt"
     content2 = tmp_path / "content2.txt"
     content.write_text("l1\nl2\n"),
-    content2.write_text("l3\nl4\n"),
+    content2.write_text("  l3\nl4\n"),  # indentation is preserved
     main(argv=["user/repo", "1", str(content), str(content2)])
-    pr.create_issue_comment.assert_called_once_with("l1\nl2\nl3\nl4")
+    pr.create_issue_comment.assert_called_once_with("l1\nl2\n  l3\nl4")
 
 
 def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_and_user, caplog):
