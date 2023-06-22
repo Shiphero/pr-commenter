@@ -112,7 +112,7 @@ def render(lines, template=None, build="", is_append=False):
     Render the comment template passing environment variables and the lines as input_lines
     """
     if template:
-        env = Environment(autoescape=True)
+        env = Environment(autoescape=False)
         t = env.from_string(Path(template).read_text())
         comment = t.render({"input_lines": lines, "is_append": is_append, **environ})
         if not is_append:
