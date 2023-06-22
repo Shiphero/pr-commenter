@@ -45,7 +45,7 @@ def test_basic_from_multi_file(tmp_path, mocker, pr_and_user, caplog):
 def test_existent_comment_same_build(monkeypatch, template_simple, mocker, pr_and_user, caplog):
     minimize = mocker.patch.object(GraphqlClient, "minimize_comment")
     is_minimized = mocker.patch.object(GraphqlClient, "is_minimized", return_value=False)
-    
+
     pr, user = pr_and_user
 
     monkeypatch.setenv("CONTENT", "new content")

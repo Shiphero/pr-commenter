@@ -102,9 +102,9 @@ class GraphqlClient:
           }
          }
         """
-        variables = {'commentID': comment.raw_data["node_id"]}
+        variables = {"commentID": comment.raw_data["node_id"]}
         result = self._post(query, variables)
-        return result["data"]["node"]['isMinimized']
+        return result["data"]["node"]["isMinimized"]
 
 
 def render(lines, template=None, build="", is_append=False):
