@@ -111,6 +111,7 @@ def test_with_existent_comment_other_build(monkeypatch, token, template_simple, 
 
 
 def test_empty_new_comment(mocker, pr_and_user, caplog):
+    assert False
     mocker.patch("pr_commenter.render", return_value="<!-- pr-commenter: foo xyz2 -->\n")
     pr = pr_and_user[0]
     main(argv=["user/repo", "1"])
