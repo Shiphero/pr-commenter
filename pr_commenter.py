@@ -189,10 +189,10 @@ def main(argv=None) -> None:
                 pr.remove_from_labels(label)
             if labels:
                 logger.info(f"Labels removed: {', '.join(labels)}")
-        else:
+        elif not debug:
             issue_comment = pr.create_issue_comment(comment)
-            logger.debug(f"New comment: {comment}")
             logger.info(f"Comment created: {issue_comment.html_url}")
+        logger.debug(f"Comment: {comment}")
 
     if not is_empty and labels:
         logger.info(f"Labels added: {', '.join(labels)}")
