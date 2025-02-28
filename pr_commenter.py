@@ -53,8 +53,8 @@ def get_pr_and_user(token, repo, pr_number):
         user = gh.get_user()
         pr = gh.get_repo(repo).get_pull(int(pr_number))
         return pr, user
-    except (KeyError, GithubException):
-        raise ValueError("Repo or PR not found")
+    except (KeyError, GithubException) as e:
+        raise ValueError(f"Error {type(e)}: {str(e)}")
 
 
 class GraphqlClient:
