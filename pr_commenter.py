@@ -30,7 +30,7 @@ Options:
   --debug                       Show the final comment but don't post it to Github
 """
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 logger = logging.getLogger(__file__)
 
